@@ -3,6 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+  (function() {
+    var stored = localStorage.getItem('zap-theme');
+    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (stored === 'dark' || (!stored && prefersDark)) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+</script>
 <title>Zap Website Building — Websites for local businesses</title>
 <meta name="description" content="Zap Website Building makes fast, mobile-ready multipage websites for local businesses. $700 flat build fee, $50/month care plan.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,6 +30,9 @@
     --teal: #2F6F6B;
     --gray: #6B6F76;
     --line: rgba(22,25,29,0.14);
+    --paper-rgb: 250,246,236;
+    --accent: #16191D;
+    --on-accent: #FAF6EC;
 
     --display: 'Space Grotesk', sans-serif;
     --body: 'Inter', sans-serif;
@@ -28,6 +40,19 @@
 
     --max: 1120px;
   }
+
+  html[data-theme="dark"] {
+    --ink: #F2EEE2;
+    --ink-soft: #B9B3A4;
+    --paper: #14171A;
+    --paper-dim: #1C2024;
+    --gray: #9199A1;
+    --line: rgba(242,238,226,0.14);
+    --paper-rgb: 20,23,26;
+  }
+
+  html { background: var(--paper); transition: background .2s ease; }
+  body { transition: background .2s ease, color .2s ease; }
 
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
@@ -86,7 +111,7 @@
     position: sticky;
     top: 0;
     z-index: 50;
-    background: rgba(250,246,236,0.92);
+    background: rgba(var(--paper-rgb), 0.92);
     backdrop-filter: blur(8px);
     border-bottom: 1px solid var(--line);
   }
@@ -139,6 +164,26 @@
   }
   .nav-cta:hover { background: var(--brick); transform: translateY(-1px); }
   .menu-toggle { display: none; }
+
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background .15s ease, transform .15s ease;
+  }
+  .theme-toggle:hover { background: var(--paper-dim); transform: translateY(-1px); }
+  .theme-toggle svg { width: 18px; height: 18px; }
+  .theme-toggle .icon-moon { display: none; }
+  html[data-theme="dark"] .theme-toggle .icon-sun { display: none; }
+  html[data-theme="dark"] .theme-toggle .icon-moon { display: block; }
 
   @media (max-width: 780px) {
     .nav-links { display: none; }
@@ -264,7 +309,7 @@
   }
 
   /* ---------- PROCESS ---------- */
-  .process { background: var(--ink); color: var(--paper); }
+  .process { background: var(--accent); color: var(--on-accent); }
   .process .eyebrow { color: var(--signal); }
   .process .eyebrow::before { background: var(--signal); }
   .process .section-head p { color: rgba(250,246,236,0.65); }
@@ -307,7 +352,7 @@
 
   .docket {
     background: #FFFDF7;
-    border: 1px solid var(--line);
+    border: 1px solid rgba(22,25,29,0.14);
     border-radius: 2px;
     box-shadow: 0 24px 48px -20px rgba(22,25,29,0.18);
     position: relative;
@@ -316,6 +361,8 @@
     opacity: 0;
     transform: translateY(18px) rotate(-0.6deg);
     transition: opacity .6s ease, transform .6s ease;
+    --ink: #16191D;
+    --gray: #6B6F76;
   }
   .docket.in-view { opacity: 1; transform: translateY(0) rotate(-0.6deg); }
 
@@ -404,11 +451,17 @@
 
   /* ---------- SAMPLE ---------- */
   .sample-frame {
-    border: 1px solid var(--line);
+    border: 1px solid rgba(22,25,29,0.14);
     border-radius: 6px;
     overflow: hidden;
     background: #fff;
     box-shadow: 0 30px 60px -30px rgba(22,25,29,0.25);
+    --paper: #FAF6EC;
+    --paper-dim: #F0EADB;
+    --ink: #16191D;
+    --ink-soft: #3A3F46;
+    --gray: #6B6F76;
+    --line: rgba(22,25,29,0.14);
   }
   .sample-toolbar {
     display: flex;
@@ -475,8 +528,8 @@
 
   /* ---------- FOOTER / CONTACT ---------- */
   footer {
-    background: var(--ink);
-    color: var(--paper);
+    background: var(--accent);
+    color: var(--on-accent);
     padding: 76px 0 40px;
   }
   .footer-top {
@@ -549,7 +602,13 @@
       <li><a href="#pricing">Pricing</a></li>
       <li><a href="#sample">Sample</a></li>
     </ul>
-    <a class="nav-cta" href="mailto:zapwebsitebuilding@gmail.com?subject=Free%20mockup%20request">Get a free mockup</a>
+    <div class="nav-right">
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+      </button>
+      <a class="nav-cta" href="mailto:zapwebsitebuilding@gmail.com?subject=Free%20mockup%20request">Get a free mockup</a>
+    </div>
   </nav>
 </header>
 
@@ -751,6 +810,19 @@
     });
   }, { threshold: 0.15 });
   revealEls.forEach(el => io.observe(el));
+
+  const themeToggle = document.getElementById('themeToggle');
+  themeToggle.addEventListener('click', () => {
+    const root = document.documentElement;
+    const isDark = root.getAttribute('data-theme') === 'dark';
+    if (isDark) {
+      root.removeAttribute('data-theme');
+      localStorage.setItem('zap-theme', 'light');
+    } else {
+      root.setAttribute('data-theme', 'dark');
+      localStorage.setItem('zap-theme', 'dark');
+    }
+  });
 </script>
 
 </body>
